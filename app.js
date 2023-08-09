@@ -9,7 +9,7 @@ const {Server} = require('socket.io')
 const server = http.createServer(app)
 const io = new Server(server , {
     cors:{
-        origin:"http://localhost:3000",
+        origin:"https://MohamedEmadEldeen09.github.io/online-tic-tac-toe-game",
         credentials:true,
     }
 })
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors({
     credentials:true,
-    origin:['http://localhost:3000'],
+    origin:['https://MohamedEmadEldeen09.github.io/online-tic-tac-toe-game'],
 }))
 
 
