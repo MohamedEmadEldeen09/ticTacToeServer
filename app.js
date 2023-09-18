@@ -9,7 +9,7 @@ const {Server} = require('socket.io')
 const server = http.createServer(app)
 const io = new Server(server , {
     cors:{
-        origin:"https://MohamedEmadEldeen09.github.io/tic-tac-toe",
+        origin:"*",
         credentials:true,
     }
 })
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors({
     credentials:true,
-    origin:['https://MohamedEmadEldeen09.github.io/tic-tac-toe'],
+    origin:"*",
 }))
 
 
