@@ -16,7 +16,6 @@ const io = new Server(server , {
 
 //middlewares
 app.disable('X-Powered-By')
-app.use(express.static('public'))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors({
@@ -48,13 +47,9 @@ const randomRoomNameGenerator = ()=>{
 
 io.on('connection' , (socket)=>{
   socket.on('disconnect' , ()=>{
-    if(socket.player){
-      if(socket.player?.playerState){     
-        if(socket.player.room){
-          socket.leave(socket.player.room.roomID)
-          socket.to(socket.player.room.roomID).emit('player-disconnected-room')        
-        }      
-      }  
+    if(socket.player?.room){
+      socket.leave(socket.player.room.roomID)
+      socket.to(socket.player.room.roomID).emit('player-disconnected-room')        
     }   
   })
 
@@ -75,6 +70,7 @@ io.on('connection' , (socket)=>{
   socket.on('start-room' ,async (roomID , targetPlayerID)=>{
     socket.join(roomID) 
     socket.player.playerState = 'busy'
+    if(!socket.player.room) socket.player.room ={roomID}
     socket.to(targetPlayerID).emit('guest-player-started-room')
 
     const players = await getAllConnectedPlayers()
@@ -106,6 +102,7 @@ io.on('connection' , (socket)=>{
   socket.on('accept-sender-request-to-join-his-room', async ({note , roomID} , targetPlayerID)=>{
     socket.join(roomID)
     socket.player.playerState = 'busy'
+    if(!socket.player.room) socket.player.room ={roomID}
     socket.to(targetPlayerID).emit('accept-sender-request-to-join-his-room' , note)
 
     const players = await getAllConnectedPlayers()
@@ -327,6 +324,6 @@ app.get('/' , (req , res)=>{
   res.sendFile('index.html')
 })
 
-server.listen(process.env.PORT , ()=>{
-  console.log('server is running in port ' + process.env.PORT);
+server.listen(process.env.PORT || 3002 , ()=>{
+  console.log('server is running in port ' + process.env.PORT || 3002);
 })
